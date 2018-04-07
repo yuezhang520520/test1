@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Chat</title>
+</head>
+<body>
+    <input type="button" id="btnSendMsg" value="点我" />
+    <script src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="/Scripts/jquery.cookie.js"></script>
+    <script src="/Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var token = $.cookie('token');
+
+        $.connection.hub.qs = { token: token };
+
+        $.connection.hub.start().done(function () {
+            $("#msg").text("连接成功");
+        }).fail(function () {
+            $("#msg").text("连接失败");
+        });
+
+        $("#btnSendMsg").click(function () {
+            $.connection.userHub.server.getUserName().done(function (res) {
+                console.log(res);
+            }).fail(function (msg) {
+                console.log(msg);
+            });
+        });
+    </script>
+</body>
+</html>

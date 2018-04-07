@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <ul id="myUl"></ul>
+    <div id="msg"></div>
+    组名:<input type="text" id="groupname1" />
+    <button id="btnAddGroup">加入组</button>
+    组名:<input type="text" id="groupname2" />
+    消息:<input type="text" id="message" />
+    <button id="btnSendMsg">发消息</button>
+
+    <button id="btnGetPerson">getperson</button>
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="signalr/hubs" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.connection.myHub.client.onMessage = function (msg) {
+                $("<li>收到消息" + msg + "</li>").appendTo($("#myUl"));
+            }
+
+            $.connection.myHub.client.onMessage2 = function (msg) {
+                $("<li>收到消息2" + msg + "</li>").appendTo($("#myUl"));
+            }
+
+            $.connection.hub.start().done(function () {
+                $("#msg").text("连接成功");
+            }).fail(function () {
+                $("#msg").text("连接失败");
+            });
+
+            $("#btnAddGroup").click(function () {
+                var groupName = $("#groupname1").val();
+                $.connection.myHub.server.addGroup(groupName);
+            });
+
+            $("#btnSendMsg").click(function () {
+                var groupname = $("#groupname2").val();
+                var message = $("#message").val();
+                $.connection.myHub.server.sendMessage(groupname, message);
+            });
+
+            $("#btnGetPerson").click(function () {
+                $.connection.myHub.server.getPerson().done(function (data) {
+                }).fail(function (msg) {
+                    alert("获取数据失败");
+                });
+            });
+
+        })
+
+
+    </script>
+</body>
+</html>
